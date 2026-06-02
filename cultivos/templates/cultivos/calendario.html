@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block titulo %}Calendario de Siembra - AgroControl{% endblock %}
+
+{% block contenido %}
+<h2><i class="fas fa-calendar-alt text-success"></i> Calendario de Siembra</h2>
+<p class="text-muted">Guía de siembra por temporada</p>
+
+<div class="row">
+    {% for item in calendario %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">{{ item.cultivo.nombre }}</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Tipo:</strong> {{ item.cultivo.get_tipo_display }}</p>
+                <p><strong>Temporada:</strong> 
+                    <span class="badge bg-info">{{ item.temporada }}</span>
+                </p>
+                <p><strong>Mejor época:</strong></p>
+                <div class="d-flex flex-wrap gap-1">
+                    {% for mes in item.meses %}
+                    <span class="badge bg-success">{{ mes }}</span>
+                    {% endfor %}
+                </div>
+                {% if item.cultivo.descripcion %}
+                <p class="mt-2"><small>{{ item.cultivo.descripcion|truncatechars:80 }}</small></p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No hay cultivos registrados</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

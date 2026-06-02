@@ -1,0 +1,128 @@
+<!-- cultivos/templates/inicio.html -->
+{% extends 'base.html' %}
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{% block contenido %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="display-4">
+            <i class="fas fa-chart-line text-success"></i> Dashboard Agrícola
+        </h1>
+        <p class="lead">Monitoreo de cultivos, precios y temporadas</p>
+    </div>
+</div>
+
+<!-- Tarjetas de estadísticas -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="card card-stats">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-seedling text-success"></i> Total Cultivos
+                </h5>
+                <h2 class="display-4">{{ total_cultivos }}</h2>
+                <p class="text-muted">Cultivos registrados</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card card-stats">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-calendar-alt text-info"></i> Temporadas
+                </h5>
+                <h2 class="display-4">4</h2>
+                <p class="text-muted">Primavera, Verano, Otoño, Invierno</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card card-stats">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-chart-line text-warning"></i> Precios
+                </h5>
+                <h2 class="display-4">Actualizados</h2>
+                <p class="text-muted">Monitoreo en tiempo real</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de cultivos recientes -->
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">
+            <i class="fas fa-list"></i> Cultivos Recientes
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if cultivos_recientes %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Región</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Temporada Siembra</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cultivo in cultivos_recientes %}
+                    <tr>
+                        <td>{{ cultivo.nombre }}</td>
+                        <td>{{ cultivo.get_tipo_display }}</td>
+                        <td>{{ cultivo.region }}</td>
+                        <td>${{ cultivo.precio }}</td>
+                        <td>{{ cultivo.cantidad }} kg</td>
+                        <td>
+                            <span class="badge bg-success">
+                                {{ cultivo.get_temporada_siembra_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            No hay cultivos registrados. <a href="/admin/cultivos/cultivo/add/">Agrega algunos desde el panel admin</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Guía de temporadas -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5><i class="fas fa-calendar-alt text-success"></i> Mejor época para sembrar</h5>
+                <ul class="list-unstyled">
+                    <li>🌸 <strong>Primavera:</strong> Tomates, maíz, frijoles</li>
+                    <li>☀️ <strong>Verano:</strong> Sandía, melón, pepino</li>
+                    <li>🍂 <strong>Otoño:</strong> Brócoli, coliflor, zanahoria</li>
+                    <li>❄️ <strong>Invierno:</strong> Lechuga, espinaca, acelga</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5><i class="fas fa-chart-line text-success"></i> Consejos para agricultores</h5>
+                <ul>
+                    <li>Monitorea los precios semanalmente</li>
+                    <li>Rotación de cultivos por temporada</li>
+                    <li>Usa fertilizantes orgánicos</li>
+                    <li>Registra todas tus cosechas</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

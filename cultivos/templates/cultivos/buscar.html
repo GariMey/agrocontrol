@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block titulo %}Buscar Cultivos - AgroControl{% endblock %}
+
+{% block contenido %}
+<h2><i class="fas fa-search"></i> Buscar Cultivos</h2>
+
+<!-- Formulario de búsqueda -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label>Buscar por nombre</label>
+                <input type="text" name="q" class="form-control" value="{{ query }}" placeholder="Ej: tomate">
+            </div>
+            <div class="col-md-3">
+                <label>Temporada de siembra</label>
+                <select name="temporada" class="form-select">
+                    <option value="">Todas</option>
+                    {% for key, value in temporadas %}
+                    <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label>Tipo de cultivo</label>
+                <select name="tipo" class="form-select">
+                    <option value="">Todos</option>
+                    {% for key, value in tipos %}
+                    <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-success w-100">Buscar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Resultados -->
+<div class="card">
+    <div class="card-header bg-success text-white">
+        <h5>Resultados: {{ total_cultivos }} cultivos encontrados</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Precio</th>
+                        <th>Temporada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cultivo in cultivos %}
+                    <tr>
+                        <td><strong>{{ cultivo.nombre }}</strong></td>
+                        <td>{{ cultivo.get_tipo_display }}</td>
+                        <td>${{ cultivo.precio }}</td>
+                        <td>{{ cultivo.get_temporada_siembra_display }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No se encontraron cultivos</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

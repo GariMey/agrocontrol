@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% block titulo %}Dashboard Avanzado - AgroControl{% endblock %}
+
+{% block contenido %}
+<style>
+    .stat-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .dashboard-icon {
+        font-size: 2rem;
+        opacity: 0.3;
+        position: absolute;
+        right: 15px;
+        top: 15px;
+    }
+</style>
+
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="fas fa-chart-line text-success"></i> Dashboard Avanzado</h2>
+        <p class="text-muted">Análisis completo de tus cultivos y métricas agrícolas</p>
+    </div>
+</div>
+
+<!-- Tarjetas de estadísticas -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card bg-primary text-white">
+            <div class="card-body position-relative">
+                <i class="fas fa-seedling dashboard-icon"></i>
+                <h6 class="card-title">Total Cultivos</h6>
+                <h2 class="display-6">{{ total_cultivos|default:"0" }}</h2>
+                <small>Especies registradas</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card bg-success text-white">
+            <div class="card-body position-relative">
+                <i class="fas fa-dollar-sign dashboard-icon"></i>
+                <h6 class="card-title">Precio Promedio</h6>
+                <h2 class="display-6">${{ precio_promedio|default:"0" }}</h2>
+                <small>Por kilogramo</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card bg-info text-white">
+            <div class="card-body position-relative">
+                <i class="fas fa-weight-hanging dashboard-icon"></i>
+                <h6 class="card-title">Cantidad Total</h6>
+                <h2 class="display-6">{{ cantidad_total|default:"0" }} kg</h2>
+                <small>En inventario</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card bg-warning text-white">
+            <div class="card-body position-relative">
+                <i class="fas fa-chart-line dashboard-icon"></i>
+                <h6 class="card-title">Valor Inventario</h6>
+                <h2 class="display-6">${{ valor_total_inventario|default:"0" }}</h2>
+                <small>Valor total</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cultivo Destacado y Tabla de Cultivos -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-trophy"></i> Cultivo Destacado</h5>
+            </div>
+            <div class="card-body text-center">
+                {% if cultivo_mas_caro %}
+                    <i class="fas fa-crown text-warning fa-3x mb-3"></i>
+                    <h4>{{ cultivo_mas_caro.nombre }}</h4>
+                    <p class="text-muted">{{ cultivo_mas_caro.get_tipo_display }}</p>
+                    <div class="row">
+                        <div class="col-6">
+                            <small>Precio más alto</small>
+                            <h5 class="text-success">${{ cultivo_mas_caro.precio }}/kg</h5>
+                        </div>
+                        <div class="col-6">
+                            <small>Temporada</small>
+                            <h5><span class="badge bg-info">{{ cultivo_mas_caro.get_temporada_siembra_display }}</span></h5>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted">✨ Agrega cultivos para ver el destacado</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Distribución por Tipo</h5>
+            </div>
+            <div class="card-body">
+                {% if tipos %}
+                    <ul class="list-group">
+                        {% for tipo, count in tipos.items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ tipo }}
+                            <span class="badge bg-success rounded-pill">{{ count }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted text-center">Sin datos para mostrar</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Temporadas -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-calendar"></i> Temporadas de Siembra</h5>
+            </div>
+            <div class="card-body">
+                {% if temporadas %}
+                    <ul class="list-group">
+                        {% for temp, count in temporadas.items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ temp }}
+                            <span class="badge bg-info rounded-pill">{{ count }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted text-center">Sin datos para mostrar</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-simple"></i> Top 5 Cultivos por Valor</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Cultivo</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Valor Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cultivo in top_cultivos %}
+                            <tr>
+                                <td>
+                                    <strong>{{ cultivo.nombre }}</strong>
+                                    {% if forloop.first %} <i class="fas fa-crown text-warning"></i>{% endif %}
+                                </td>
+                                <td>${{ cultivo.precio }}/kg</td>
+                                <td>{{ cultivo.cantidad }} kg</td>
+                                <td class="text-success">${{ cultivo.valor_total }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No hay cultivos</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cultivos Recientes -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-clock"></i> Cultivos Recientes</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for cultivo in cultivos_recientes %}
+                    <div class="col-md-4 mb-2">
+                        <div class="border rounded p-2">
+                            <i class="fas fa-leaf text-success"></i>
+                            <strong>{{ cultivo.nombre }}</strong>
+                            <small class="text-muted d-block">{{ cultivo.get_tipo_display }} | {{ cultivo.region }}</small>
+                            <span class="badge bg-success">${{ cultivo.precio }}/kg</span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center text-muted">No hay cultivos registrados</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mensaje si no hay datos -->
+{% if total_cultivos == 0 %}
+<div class="alert alert-info mt-3">
+    <i class="fas fa-info-circle"></i>
+    No hay cultivos registrados. 
+    <a href="/admin/cultivos/cultivo/add/" class="alert-link">Agrega algunos cultivos</a> 
+    para ver estadísticas completas.
+</div>
+{% endif %}
+
+{% endblock %}

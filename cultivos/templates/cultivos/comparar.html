@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block titulo %}Comparar Cultivos - AgroControl{% endblock %}
+
+{% block contenido %}
+<h2><i class="fas fa-chart-line text-success"></i> Comparar Cultivos</h2>
+<p class="text-muted">Compara dos cultivos para tomar mejores decisiones</p>
+
+<!-- Selectores -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row">
+            <div class="col-md-5">
+                <label>Cultivo 1</label>
+                <select name="cultivo1" class="form-select">
+                    <option value="">Seleccionar...</option>
+                    {% for cultivo in cultivos %}
+                    <option value="{{ cultivo.id }}" {% if cultivo1.id == cultivo.id %}selected{% endif %}>
+                        {{ cultivo.nombre }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label>Cultivo 2</label>
+                <select name="cultivo2" class="form-select">
+                    <option value="">Seleccionar...</option>
+                    {% for cultivo in cultivos %}
+                    <option value="{{ cultivo.id }}" {% if cultivo2.id == cultivo.id %}selected{% endif %}>
+                        {{ cultivo.nombre }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-success w-100">Comparar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Resultados de comparación -->
+{% if cultivo1 and cultivo2 %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">{{ cultivo1.nombre }}</h4>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr><th>Tipo</th><td>{{ cultivo1.get_tipo_display }}</td></tr>
+                    <tr><th>Región</th><td>{{ cultivo1.region }}</td></tr>
+                    <tr><th>Precio/kg</th><td class="text-success">${{ cultivo1.precio }}</td></tr>
+                    <tr><th>Cantidad</th><td>{{ cultivo1.cantidad }} kg</td></tr>
+                    <tr><th>Valor Total</th><td class="text-primary">${{ cultivo1.valor_total }}</td></tr>
+                    <tr><th>Siembra</th><td>{{ cultivo1.get_temporada_siembra_display }}</td></tr>
+                    <tr><th>Cosecha</th><td>{{ cultivo1.get_temporada_cosecha_display }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">{{ cultivo2.nombre }}</h4>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr><th>Tipo</th><td>{{ cultivo2.get_tipo_display }}</td></tr>
+                    <tr><th>Región</th><td>{{ cultivo2.region }}</td></tr>
+                    <tr><th>Precio/kg</th><td class="text-success">${{ cultivo2.precio }}</td></tr>
+                    <tr><th>Cantidad</th><td>{{ cultivo2.cantidad }} kg</td></tr>
+                    <tr><th>Valor Total</th><td class="text-primary">${{ cultivo2.valor_total }}</td></tr>
+                    <tr><th>Siembra</th><td>{{ cultivo2.get_temporada_siembra_display }}</td></tr>
+                    <tr><th>Cosecha</th><td>{{ cultivo2.get_temporada_cosecha_display }}</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Análisis de comparación -->
+<div class="card mt-4">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0"><i class="fas fa-chart-line"></i> Análisis Comparativo</h5>
+    </div>
+    <div class="card-body">
+        <ul class="list-group">
+            {% if cultivo1.precio > cultivo2.precio %}
+            <li class="list-group-item">
+                <i class="fas fa-arrow-up text-success"></i> 
+                {{ cultivo1.nombre }} es <strong>${{ cultivo1.precio|floatformat:2 }}</strong> más caro que {{ cultivo2.nombre }}
+            </li>
+            {% else %}
+            <li class="list-group-item">
+                <i class="fas fa-arrow-down text-danger"></i> 
+                {{ cultivo2.nombre }} es <strong>${{ cultivo2.precio|floatformat:2 }}</strong> más caro que {{ cultivo1.nombre }}
+            </li>
+            {% endif %}
+            
+            {% if cultivo1.valor_total > cultivo2.valor_total %}
+            <li class="list-group-item">
+                <i class="fas fa-trophy text-warning"></i> 
+                {{ cultivo1.nombre }} tiene mayor valor total en inventario
+            </li>
+            {% else %}
+            <li class="list-group-item">
+                <i class="fas fa-trophy text-warning"></i> 
+                {{ cultivo2.nombre }} tiene mayor valor total en inventario
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

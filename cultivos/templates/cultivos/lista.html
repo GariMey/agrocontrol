@@ -1,0 +1,66 @@
+<!-- cultivos/templates/cultivos/lista.html -->
+{% extends 'base.html' %}
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{% block contenido %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>
+            <i class="fas fa-leaf text-success"></i> Lista de Cultivos
+        </h2>
+        <p>Total de cultivos registrados: <strong>{{ total_cultivos }}</strong></p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-success">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Región</th>
+                        <th>Precio (kg)</th>
+                        <th>Cantidad</th>
+                        <th>Valor Total</th>
+                        <th>Siembra</th>
+                        <th>Cosecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cultivo in cultivos %}
+                    <tr>
+                        <td><strong>{{ cultivo.nombre }}</strong></td>
+                        <td>{{ cultivo.get_tipo_display }}</td>
+                        <td>{{ cultivo.region }}</td>
+                        <td class="text-success">${{ cultivo.precio }}</td>
+                        <td>{{ cultivo.cantidad }} kg</td>
+                        <td class="text-primary">${{ cultivo.valor_total }}</td>
+                        <td>
+                            <span class="badge bg-info">
+                                {{ cultivo.get_temporada_siembra_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-warning">
+                                {{ cultivo.get_temporada_cosecha_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            <div class="alert alert-info">
+                                No hay cultivos registrados.
+                                <a href="/admin/cultivos/cultivo/add/" class="alert-link">Agrega algunos aquí</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
