@@ -97,8 +97,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ✅ Configuración para servir archivos estáticos en producción
 # (Opcional: para desarrollo local con DEBUG=False)
-import sys
-if 'runserver' in sys.argv:
+#import sys
+#if 'runserver' in sys.argv:
     # Si estás ejecutando runserver, sirve archivos estáticos manualmente
-    DEBUG = True  # Temporal para desarrollo
-    ALLOWED_HOSTS = ['*']
+ #   DEBUG = True  # Temporal para desarrollo
+ #   ALLOWED_HOSTS = ['*']
