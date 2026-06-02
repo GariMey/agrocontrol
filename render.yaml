@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: agrocontrol
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn agrocontrol.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: "3.11.0"
