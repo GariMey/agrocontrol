@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
-
 class CultivosConfig(AppConfig):
-    name = 'cultivos'
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'cultivos'  
